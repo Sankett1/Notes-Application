@@ -3,32 +3,30 @@ import { useAuth } from './AuthContext';
 
 export default function Login() {
   const [username, setUsername] = useState('');
-  const [role, setRole] = useState('user');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const { login } = useAuth();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    
+    setError('');
+
     if (!username.trim()) {
-      setError('Please enter a username');
+      setError('Please enter a username or email');
       return;
     }
 
-    // Demo credentials
-    const validUsers = {
-      admin: 'admin123',
-      user: 'user123'
-    };
+    if (!password.trim()) {
+      setError('Please enter a password');
+      return;
+    }
 
-    // For demo: accept any username with roles user/admin
-    if (username && role) {
-      login(username, role);
+    const result = await login(username, password);
+    if (result.success) {
       setUsername('');
-      setRole('user');
-      setError('');
+      setPassword('');
     } else {
-      setError('Invalid credentials');
+      setError(result.message || 'Invalid credentials');
     }
   };
 
@@ -49,13 +47,13 @@ export default function Login() {
 
           <div>
             <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-2">
-              Username
+              Username or Email
             </label>
             <input
               id="username"
               name="username"
               type="text"
-              placeholder="Enter any username"
+              placeholder="Enter username or email"
               value={username}
               onChange={(e) => {
                 setUsername(e.target.value);
@@ -63,23 +61,28 @@ export default function Login() {
               }}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
             />
-            <p className="text-xs text-gray-500 mt-1">Try: admin, john, sarah, etc.</p>
+            <p className="text-xs text-gray-500 mt-1">Try: admin, john, etc.</p>
           </div>
 
           <div>
-            <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-2">
-              Login As
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+              Password
             </label>
-            <select
-              id="role"
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition bg-white"
-            >
-              <option value="user">👤 Regular User</option>
-              <option value="admin">🔐 Administrator</option>
-            </select>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setError('');
+              }}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+            />
           </div>
+
+
 
           <button
             type="submit"

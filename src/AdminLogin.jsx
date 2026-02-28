@@ -23,7 +23,7 @@ export default function AdminLogin({ onBack }) {
     }
 
     setLoading(true);
-    const result = await login(adminId, password, true);
+    const result = await login(adminId, password);
     setLoading(false);
 
     if (result.success) {

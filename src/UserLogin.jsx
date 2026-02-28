@@ -23,7 +23,7 @@ export default function UserLogin({ onBack }) {
     }
 
     setLoading(true);
-    const result = await login(username, password, false);
+    const result = await login(username, password);
     setLoading(false);
 
     if (result.success) {

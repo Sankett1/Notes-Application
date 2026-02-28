@@ -28,9 +28,12 @@ api.interceptors.response.use(
   (error) => {
     // Handle 401 - token expired or invalid
     if (error.response?.status === 401) {
-      localStorage.removeItem('authToken');
-      localStorage.removeItem('userId');
-      window.location.href = '/';
+      // only redirect if we actually sent a token
+      if (getToken()) {
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('currentUser');
+        window.location.href = '/';
+      }
     }
     return Promise.reject(error);
   }
