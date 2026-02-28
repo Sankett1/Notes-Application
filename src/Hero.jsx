@@ -193,22 +193,28 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Footer CTA */}
-        <div className="text-center py-12 border-t border-gray-200">
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">Ready to get started?</h2>
-          <div className="flex flex-col md:flex-row gap-4 justify-center">
-            <button
-              onClick={() => setActiveTab('user-login')}
-              className="bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-8 rounded-lg transition transform hover:scale-105"
-            >
-              👤 Login as User
-            </button>
-            <button
-              onClick={() => setActiveTab('admin-login')}
-              className="bg-admin-600 hover:bg-admin-700 text-white font-bold py-3 px-8 rounded-lg transition transform hover:scale-105"
-            >
-              🔐 Login as Admin
-            </button>
+        {/* Footer: About & Contact */}
+        <div className="py-12 border-t border-gray-200">
+          <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div id="about" className="bg-white rounded-lg shadow p-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-3">About Us</h2>
+              <p className="text-gray-700">
+                Notes is a simple, secure note-taking application built with a focus on
+                usability and role-based access. We provide a lightweight interface for
+                personal productivity and admin tools for system monitoring.
+              </p>
+              <p className="text-gray-600 mt-4">Founded with privacy and simplicity in mind.</p>
+            </div>
+
+            <div id="contact" className="bg-white rounded-lg shadow p-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-3">Contact</h2>
+              <p className="text-gray-700">Questions or support? Reach out to us:</p>
+              <ul className="text-gray-700 mt-4 space-y-2">
+                <li><strong>Email:</strong> <a href="mailto:support@notes.app" className="text-primary-600">support@notes.app</a></li>
+                <li><strong>Phone:</strong> <a href="tel:+15551234" className="text-primary-600">+1 (555) 123-4</a></li>
+                <li><strong>Address:</strong> 123 Notes Lane, Suite 100</li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
