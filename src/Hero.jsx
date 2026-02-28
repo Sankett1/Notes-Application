@@ -193,30 +193,38 @@ export default function Hero() {
           </div>
         </div>
 
-        {/* Footer: About & Contact */}
-        <div className="py-12 border-t border-gray-200">
-          <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div id="about" className="bg-white rounded-lg shadow p-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-3">About Us</h2>
-              <p className="text-gray-700">
+        {/* Footer: About & Contact (dark) */}
+        <footer className="bg-black text-white py-12">
+          <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 px-4">
+            <div id="about" className="rounded-lg p-6">
+              <h2 className="text-2xl font-bold mb-3">About Us</h2>
+              <p className="text-gray-300">
                 Notes is a simple, secure note-taking application built with a focus on
                 usability and role-based access. We provide a lightweight interface for
                 personal productivity and admin tools for system monitoring.
               </p>
-              <p className="text-gray-600 mt-4">Founded with privacy and simplicity in mind.</p>
+              <p className="text-gray-400 mt-4">Founded with privacy and simplicity in mind.</p>
             </div>
 
-            <div id="contact" className="bg-white rounded-lg shadow p-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-3">Contact</h2>
-              <p className="text-gray-700">Questions or support? Reach out to us:</p>
-              <ul className="text-gray-700 mt-4 space-y-2">
-                <li><strong>Email:</strong> <a href="mailto:support@notes.app" className="text-primary-600">support@notes.app</a></li>
-                <li><strong>Phone:</strong> <a href="tel:+15551234" className="text-primary-600">+1 (555) 123-4</a></li>
-                <li><strong>Address:</strong> 123 Notes Lane, Suite 100</li>
+            <div id="contact" className="rounded-lg p-6">
+              <h2 className="text-2xl font-bold mb-3">Contact</h2>
+              <p className="text-gray-300">Questions or support? Reach out to us:</p>
+              <ul className="mt-4 space-y-2 text-gray-300">
+                <li>
+                  <span className="font-semibold">Email:</span>{' '}
+                  <a href="mailto:support@notes.app" className="text-primary-400 hover:text-primary-300">support@notes.app</a>
+                </li>
+                <li>
+                  <span className="font-semibold">Phone:</span>{' '}
+                  <a href="tel:+15551234" className="text-primary-400 hover:text-primary-300">+1 (555) 123-4</a>
+                </li>
+                <li>
+                  <span className="font-semibold">Address:</span> 123 Notes Lane, Suite 100
+                </li>
               </ul>
             </div>
           </div>
-        </div>
+        </footer>
       </div>
     </div>
   );
