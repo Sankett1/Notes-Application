@@ -33,10 +33,11 @@ npm install
 
 ### Step 2: Setup Environment Variables
 
-Create a `.env` file in the `server` directory:
+Create a `.env` file in the `server` directory (optional):
 
 ```env
 # MongoDB Connection
+# If you omit this variable, the app will default to mongodb://localhost:27017/notes-app
 MONGODB_URI=mongodb://localhost:27017/notes-app
 
 # Server Configuration
@@ -68,6 +69,25 @@ npm start
 ```
 
 Server runs at: `http://localhost:5000`
+
+### 🛠️ Seeding the Database
+
+A simple seeding script is provided to bootstrap the database with sample users, notes, and logs.
+
+1. Ensure your `.env` file is configured with a working `MONGODB_URI`.
+2. From the `server` directory run:
+   ```bash
+   npm run seed
+   ```
+
+   This will **clear existing users, notes, and logs** then insert:
+   - Admin user (`admin` / `admin123`)
+   - Regular user (`jane` / `user123`)
+   - A couple of starter notes for `jane`
+   - Log entries representing the seed actions
+
+   You can modify `seed.js` if you want different initial data or to avoid clearing collections.
+
 
 ---
 

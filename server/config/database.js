@@ -1,11 +1,14 @@
 import mongoose from 'mongoose';
 
 export const connectDB = async () => {
+  // fall back to local database if MONGODB_URI not set
+  const uri = process.env.MONGODB_URI || 'mongodb://localhost:27017/notes-app';
+  if (!process.env.MONGODB_URI) {
+    console.warn('⚠️ Using default MongoDB URI: mongodb://localhost:27017/notes-app');
+  }
   try {
-    const conn = await mongoose.connect(process.env.MONGODB_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    // mongoose v6+ uses newer parser/ topology by default, options deprecated
+    const conn = await mongoose.connect(uri);
 
     console.log(`✓ MongoDB Connected: ${conn.connection.host}`);
     return conn;
