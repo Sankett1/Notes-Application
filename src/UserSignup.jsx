@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from './AuthContext';
 
-export default function UserSignup({ onBack }) {
+export default function UserSignup({ onBack, onSuccess }) {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -50,13 +50,16 @@ export default function UserSignup({ onBack }) {
     setLoading(false);
 
     if (result.success) {
-      setSuccess('Account created successfully! Logging in...');
+      setSuccess('Account created successfully! You are now logged in.');
       setUsername('');
       setEmail('');
       setPassword('');
       setConfirmPassword('');
+      // no redirect; App will show dashboard because user is logged in
     } else {
-      setError(result.message || 'Signup failed');
+      const msg = result.message || 'Signup failed';
+      setError(msg);
+      // duplicate error simply displayed; user can correct inputs or log in manually
     }
   };
 

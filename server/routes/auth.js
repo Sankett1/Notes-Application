@@ -8,7 +8,12 @@ const router = express.Router();
 
 // Generate JWT Token
 const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
+  const secret = process.env.JWT_SECRET || 'default_dev_secret';
+  if (!process.env.JWT_SECRET) {
+    console.warn('⚠️ JWT_SECRET not set, using default development secret');
+  }
+
+  return jwt.sign({ id }, secret, {
     expiresIn: '7d'
   });
 };
@@ -25,46 +30,36 @@ router.post('/signup', asyncHandler(async (req, res) => {
   // Check if user already exists
   const existingUser = await User.findOne({ $or: [{ email }, { username }] });
   if (existingUser) {
-    return res.status(400).json({ message: 'Email or username already in use' });
+    const duplicateField = existingUser.email === email ? 'Email' : 'Username';
+    return res.status(400).json({ message: `${duplicateField} already in use` });
   }
 
-  // Create user
-  const user = await User.create({
-    username,
-    email,
-    password,
-    role,
-    department: role === 'admin' ? department : null
-  });
+  try {
+    // Create user
+    const user = await User.create({
+      username,
+      email,
+      password,
+      role,
+      department: role === 'admin' ? department : null
+    });
 
-  // Log the signup
-  await logActivity('LOGIN', `User signed up: ${username}`, user, 'user');
+    // Log the signup
+    await logActivity('LOGIN', `User signed up: ${username}`, user, 'user');
 
-  // Generate token
-  const token = generateToken(user._id);
+    // Generate token
+    const token = generateToken(user._id);
 
-  res.status(201).json({
-    success: true,
-    message: 'User created successfully',
-    token,
-    user: user.toJSON()
-  });
-}));
-
-// Login
-router.post('/login', asyncHandler(async (req, res) => {
-  const { username, email, password } = req.body;
-
-  // Validation
-  if ((!username && !email) || !password) {
-    return res.status(400).json({ message: 'Please provide email/username and password' });
+    res.status(201).json({
+      success: true,
+      message: 'User created successfully',
+      token,
+      user: user.toJSON()
+    });
+  } catch (err) {
+    // If mongoose validation issue, let error handler handle it but include details here
+    throw err;
   }
-
-  // Check for user (need password field)
-  const user = await User.findOne({
-    $or: [{ username }, { email }]
-  }).select('+password');
-
   if (!user) {
     return res.status(401).json({ message: 'Invalid credentials' });
   }

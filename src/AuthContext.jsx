@@ -57,7 +57,16 @@ export const AuthProvider = ({ children }) => {
       return { success: true, user: userData };
     } catch (error) {
       console.error('Signup error:', error);
-      const message = error.response?.data?.message || 'Signup failed';
+      const data = error.response?.data;
+      let message = 'Signup failed';
+      if (data) {
+        if (typeof data.message === 'string') {
+          message = data.message;
+        }
+        if (Array.isArray(data.details)) {
+          message = data.details.join(', ');
+        }
+      }
       return { success: false, message };
     }
   };

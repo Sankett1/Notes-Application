@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from './AuthContext';
 
-export default function AdminSignup({ onBack }) {
+export default function AdminSignup({ onBack, onSuccess }) {
   const [adminName, setAdminName] = useState('');
   const [adminId, setAdminId] = useState('');
   const [email, setEmail] = useState('');
@@ -10,9 +10,9 @@ export default function AdminSignup({ onBack }) {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const { login } = useAuth();
+  const { login, signup } = useAuth();
 
-  const handleSignup = (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
 
     if (!adminName.trim()) {
@@ -55,20 +55,24 @@ export default function AdminSignup({ onBack }) {
       return;
     }
 
-    // Demo: create admin account and auto-login
-    setSuccess('Admin account created successfully! Logging in...');
-    setError('');
+    setLoading(true);
+    const result = await signup(adminId, email, password, 'admin', department);
+    setLoading(false);
 
-    setTimeout(() => {
-      login(adminId, 'admin');
+    if (result.success) {
+      setSuccess('Admin account created successfully! You are now logged in.');
       setAdminName('');
       setAdminId('');
       setEmail('');
       setDepartment('');
       setPassword('');
       setConfirmPassword('');
-      setSuccess('');
-    }, 1500);
+      // no redirect – user now authenticated
+    } else {
+      const msg = result.message || 'Signup failed';
+      setError(msg);
+      // show duplicate message only
+    }
   };
 
   return (

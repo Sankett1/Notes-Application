@@ -60,15 +60,10 @@ app.use((err, req, res, next) => {
   
   // Mongoose validation error
   if (err.name === 'ValidationError') {
+    const messages = Object.values(err.errors).map(e => e.message);
     return res.status(400).json({
-      message: 'Validation Error',
-      details: Object.values(err.errors).map(e => e.message)
-    });
-  }
-
-  // JWT errors
-  if (err.name === 'JsonWebTokenError') {
-    return res.status(401).json({ message: 'Invalid token' });
+      message: messages.join(', '),
+      details: messages
   }
 
   if (err.name === 'TokenExpiredError') {
@@ -84,7 +79,7 @@ app.use((err, req, res, next) => {
 // Connect to database
 connectDB().then(() => {
   const PORT = process.env.PORT || 5000;
-  app.listen(PORT, () => {
+  const server = app.listen(PORT, () => {
     console.log(`
 ╔════════════════════════════════════════╗
 ║     Notes App Backend Server           ║
@@ -93,6 +88,19 @@ connectDB().then(() => {
 ╚════════════════════════════════════════╝
     `);
   });
+
+  // handle unhandled promise rejections and uncaught exceptions
+  process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+    // Optionally close server and exit process
+  });
+
+  process.on('uncaughtException', (err) => {
+    console.error('Uncaught Exception:', err);
+    // Optionally shutdown
+    process.exit(1);
+  });
+
 }).catch(err => {
   console.error('Failed to connect to database:', err);
   process.exit(1);

@@ -45,6 +45,8 @@ PORT=5000
 NODE_ENV=development
 
 # JWT Secret (change this in production)
+# Used to sign tokens. If not provided a default development secret will be used
+# but you should set a strong secret in any real deployment.
 JWT_SECRET=your_super_secret_jwt_key_change_in_production_12345
 
 # CORS

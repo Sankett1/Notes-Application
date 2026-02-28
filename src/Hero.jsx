@@ -6,8 +6,8 @@ import AdminSignup from './AdminSignup';
 
 export default function Hero() {
   const [activeTab, setActiveTab] = useState(null); // null = hero, 'user-login', 'admin-login', 'user-signup', 'admin-signup'
-+  // helper to switch to login after a successful signup
-+  const goToLogin = (type = 'user-login') => setActiveTab(type);
+  // helper to switch to login after a duplicate error (if desired) - not used currently
+  const goToLogin = (type = 'user-login') => setActiveTab(type);
 
   if (activeTab === 'user-login') {
     return <UserLogin onBack={() => setActiveTab(null)} />;
@@ -18,11 +18,11 @@ export default function Hero() {
   }
 
   if (activeTab === 'user-signup') {
-    return <UserSignup onBack={() => setActiveTab(null)} onSuccess={() => goToLogin('user-login')} />;
+    return <UserSignup onBack={() => setActiveTab(null)} />;
   }
 
   if (activeTab === 'admin-signup') {
-    return <AdminSignup onBack={() => setActiveTab(null)} onSuccess={() => goToLogin('admin-login')} />;
+    return <AdminSignup onBack={() => setActiveTab(null)} />;
   }
 
   return (
