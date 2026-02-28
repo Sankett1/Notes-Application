@@ -5,10 +5,12 @@ export default function UserLogin({ onBack }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const { login } = useAuth();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
+    setError('');
 
     if (!username.trim()) {
       setError('Please enter your username');
@@ -20,11 +22,16 @@ export default function UserLogin({ onBack }) {
       return;
     }
 
-    // Demo: accept any username/password combination
-    login(username, 'user');
-    setUsername('');
-    setPassword('');
-    setError('');
+    setLoading(true);
+    const result = await login(username, password, false);
+    setLoading(false);
+
+    if (result.success) {
+      setUsername('');
+      setPassword('');
+    } else {
+      setError(result.message || 'Login failed. Please check your credentials.');
+    }
   };
 
   return (
@@ -63,7 +70,8 @@ export default function UserLogin({ onBack }) {
                 setUsername(e.target.value);
                 setError('');
               }}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition"
+              disabled={loading}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition disabled:opacity-50"
             />
           </div>
 
@@ -79,22 +87,24 @@ export default function UserLogin({ onBack }) {
                 setPassword(e.target.value);
                 setError('');
               }}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition"
+              disabled={loading}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition disabled:opacity-50"
             />
           </div>
 
           <button
             type="submit"
-            className="w-full bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-bold py-3 px-4 rounded-lg transition transform hover:scale-105 active:scale-95"
+            disabled={loading}
+            className="w-full bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-bold py-3 px-4 rounded-lg transition transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            🔓 Sign In
+            {loading ? '⏳ Signing in...' : '🔓 Sign In'}
           </button>
         </form>
 
         <div className="mt-8 pt-8 border-t border-gray-200">
-          <p className="text-center text-sm text-gray-600 mb-4">Demo Mode</p>
+          <p className="text-center text-sm text-gray-600 mb-2">Connected to Backend API</p>
           <p className="text-xs text-gray-500 text-center">
-            You can use any username and password combination for demo purposes.
+            Make sure the backend server is running on port 5000
           </p>
         </div>
       </div>
