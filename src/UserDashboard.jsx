@@ -135,7 +135,7 @@ export default function UserDashboard() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100">
       {/* Header */}
       <div className="bg-white shadow-md border-b-4 border-primary-600">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="w-full px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex justify-between items-center">
             <div>
               <h1 className="text-3xl font-bold text-gray-900">👤 My Notes</h1>
@@ -159,7 +159,7 @@ export default function UserDashboard() {
       )}
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="w-full px-4 sm:px-6 lg:px-8 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Form Section */}
           <div className="lg:col-span-1">
