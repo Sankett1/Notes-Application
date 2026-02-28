@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { logger } from './logger';
 
-function AdminLogs() {
+function AdminLogs({ isAdmin = true }) {
   const [showLogs, setShowLogs] = useState(false);
   const [filterAction, setFilterAction] = useState('');
 
@@ -29,34 +29,45 @@ function AdminLogs() {
     ? allLogs.filter(log => log.action === filterAction)
     : allLogs;
 
+  if (!isAdmin) {
+    return null;
+  }
+
   return (
-    <div style={styles.adminContainer}>
-      <button 
+    <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+      <button
         onClick={() => setShowLogs(!showLogs)}
-        style={styles.adminButton}
+        className="w-full bg-admin-600 hover:bg-admin-700 text-white font-bold py-4 px-6 text-left flex justify-between items-center transition"
       >
-        {showLogs ? '▼' : '▶'} Admin Logs ({allLogs.length})
+        <span>{showLogs ? '▼' : '▶'} 🔍 Admin Logs ({allLogs.length})</span>
       </button>
 
       {showLogs && (
-        <div style={styles.logsPanel}>
-          <div style={styles.statsArea}>
-            <h4>Action Statistics</h4>
-            <div style={styles.statsGrid}>
-              {Object.entries(stats).map(([action, count]) => (
-                <div key={action} style={styles.statItem}>
-                  <strong>{action}:</strong> {count}
-                </div>
-              ))}
+        <div className="p-6 space-y-6">
+          {/* Statistics */}
+          <div>
+            <h4 className="text-lg font-bold text-gray-900 mb-4">📊 Action Statistics</h4>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+              {Object.entries(stats).length === 0 ? (
+                <p className="text-gray-500 col-span-full">No actions logged yet</p>
+              ) : (
+                Object.entries(stats).map(([action, count]) => (
+                  <div key={action} className="bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-lg p-3 text-center">
+                    <div className="font-bold text-blue-900">{count}</div>
+                    <div className="text-xs text-blue-700 mt-1">{action}</div>
+                  </div>
+                ))
+              )}
             </div>
           </div>
 
+          {/* Filter */}
           <div>
-            <label>Filter by action: </label>
-            <select 
-              value={filterAction} 
+            <label className="block text-sm font-bold text-gray-900 mb-2">Filter by Action:</label>
+            <select
+              value={filterAction}
               onChange={e => setFilterAction(e.target.value)}
-              style={styles.select}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-admin-600 focus:border-transparent bg-white"
             >
               <option value="">All Actions</option>
               {Object.keys(stats).map(action => (
@@ -65,119 +76,53 @@ function AdminLogs() {
             </select>
           </div>
 
-          <div style={styles.logsContent}>
-            {filteredLogs.length === 0 ? (
-              <p>No logs found</p>
-            ) : (
-              filteredLogs.map(log => (
-                <div key={log.id} style={styles.logEntry}>
-                  <span style={styles.timestamp}>{log.timestamp}</span>
-                  <span style={styles.action}>[{log.action}]</span>
-                  <span>{log.details}</span>
+          {/* Logs */}
+          <div>
+            <h4 className="text-lg font-bold text-gray-900 mb-3">📋 Log Details</h4>
+            <div className="bg-gray-50 rounded-lg border border-gray-200 max-h-96 overflow-y-auto">
+              {filteredLogs.length === 0 ? (
+                <div className="p-4 text-center text-gray-500">
+                  No logs found
                 </div>
-              ))
-            )}
+              ) : (
+                <div className="divide-y divide-gray-200">
+                  {filteredLogs.map((log, idx) => (
+                    <div key={idx} className="p-3 hover:bg-gray-100 transition font-mono text-sm">
+                      <div className="flex justify-between items-start gap-2">
+                        <span className="text-gray-600">{log.timestamp}</span>
+                        <span className="px-2 py-1 bg-blue-200 text-blue-900 rounded text-xs font-bold">
+                          {log.action}
+                        </span>
+                      </div>
+                      <div className="text-gray-700 mt-1 break-words">
+                        {log.details}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
-          <div style={styles.buttonGroup}>
-            <button onClick={handleExportLogs} style={styles.exportBtn}>📥 Export Logs</button>
-            <button onClick={handleClearLogs} style={styles.clearBtn}>🗑️ Clear Logs</button>
+          {/* Action Buttons */}
+          <div className="flex gap-3 pt-4 border-t border-gray-200">
+            <button
+              onClick={handleExportLogs}
+              className="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition"
+            >
+              📥 Export Logs
+            </button>
+            <button
+              onClick={handleClearLogs}
+              className="flex-1 bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded-lg transition"
+            >
+              🗑️ Clear Logs
+            </button>
           </div>
         </div>
       )}
     </div>
   );
 }
-
-const styles = {
-  adminContainer: {
-    marginTop: '20px',
-    borderTop: '2px solid #ddd',
-    paddingTop: '15px'
-  },
-  adminButton: {
-    backgroundColor: '#dc3545',
-    color: 'white',
-    padding: '8px 15px',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    fontSize: '14px',
-    fontWeight: 'bold'
-  },
-  logsPanel: {
-    marginTop: '10px',
-    backgroundColor: '#f5f5f5',
-    padding: '15px',
-    borderRadius: '4px',
-    border: '1px solid #ddd'
-  },
-  statsArea: {
-    marginBottom: '15px'
-  },
-  statsGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
-    gap: '10px',
-    marginTop: '10px'
-  },
-  statItem: {
-    padding: '8px',
-    backgroundColor: '#e3f2fd',
-    borderRadius: '4px',
-    borderLeft: '4px solid #2196F3'
-  },
-  select: {
-    padding: '6px',
-    borderRadius: '4px',
-    border: '1px solid #ddd',
-    marginLeft: '10px'
-  },
-  logsContent: {
-    maxHeight: '300px',
-    overflowY: 'auto',
-    backgroundColor: 'white',
-    padding: '10px',
-    borderRadius: '4px',
-    margin: '10px 0',
-    border: '1px solid #ddd'
-  },
-  logEntry: {
-    padding: '8px',
-    borderBottom: '1px solid #eee',
-    fontSize: '12px',
-    fontFamily: 'monospace'
-  },
-  timestamp: {
-    color: '#999',
-    marginRight: '10px'
-  },
-  action: {
-    color: '#2196F3',
-    fontWeight: 'bold',
-    marginRight: '10px'
-  },
-  buttonGroup: {
-    display: 'flex',
-    gap: '10px',
-    marginTop: '10px'
-  },
-  exportBtn: {
-    backgroundColor: '#28a745',
-    color: 'white',
-    padding: '8px 15px',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer'
-  },
-  clearBtn: {
-    backgroundColor: '#ffc107',
-    color: '#333',
-    padding: '8px 15px',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer'
-  }
-};
 
 export default AdminLogs;
